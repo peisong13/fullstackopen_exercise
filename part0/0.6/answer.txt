@@ -1,0 +1,9 @@
+title What happened when a user submit messege on the SPA
+
+note over browser:
+browser executes the event handler that creates a new node
+and redraw all nodes to display
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: json response: {"message":"note created"}
