@@ -1,9 +1,11 @@
 const Course = ({ course }) => {
-  let courseInfo = course.parts.map((part) => <p>{part.name} {part.exercises}</p>)
+  let courseInfo = course.parts.map((part) => <p key={part.id}>{part.name} {part.exercises}</p>)
+  let total = course.parts.reduce((sum, part) => (sum + part.exercises), 0)
   return (
     <div>
       <h1>{course.name}</h1>
       {courseInfo}
+      <p>total of {total} exercises</p>
     </div>
   )
 }
