@@ -6,6 +6,29 @@ const PersonNumber = ({person}) => {
     </p>
   )
 }
+
+const Filter = ({newNameFilter, handleNewNameFilter}) => (
+  <div>filter shown with
+  <input value={newNameFilter} onChange={handleNewNameFilter}></input>
+  </div>
+)
+
+const PersonForm = ({addName, newName, handleNameChange, newNumber, handleNumberChange}) => (
+  <form onSubmit={addName}>
+  <h3>add a new</h3>
+  <div>
+    name: <input value={newName} onChange={handleNameChange}/>
+  </div>
+  <div>
+    number: <input value={newNumber} onChange={handleNumberChange} />
+  </div>
+  <div>
+    <button type="submit">add</button>
+  </div>
+</form>
+)
+
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -55,24 +78,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with
-        <input value={newNameFilter} onChange={handleNewNameFilter}></input>
-      </div>
-      <form onSubmit={addName}>
-        <h1>add a new</h1>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter newNameFilter={newNameFilter} handleNewNameFilter={handleNewNameFilter}/>
+      <PersonForm
+        addName={addName}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange}
+      />
+
       <h2>Numbers</h2>
-      {persons.filter(person => person.name.toLowerCase().includes(newNameFilter)).map((person) => <PersonNumber person={person}/>)}
-      <div>debug: {newName}</div>
+      {persons.filter(person => person.name.toLowerCase().includes(newNameFilter.toLowerCase())).map((person) => <PersonNumber person={person}/>)}
+      
     </div>
     
   )
