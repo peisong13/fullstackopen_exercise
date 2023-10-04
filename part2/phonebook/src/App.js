@@ -22,7 +22,8 @@ const App = () => {
     if (persons.filter(person => person.name === newName).length === 0) {
       setPersons(persons.concat(nameObject))
     } else {
-      alert(String(newName) + " is already added to phonebook")
+      let alertMessege = `${newName} is already added to phonebook`
+      alert(alertMessege)
     }
     console.log('button clicked', nameObject)
     // console.log(nameObject)
