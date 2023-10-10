@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
 
-const PersonNumber = ({person}) => {
+
+
+
+const PersonNumber = ({person, handleDelete}) => {
   return (
     <p key={person.id}>
-      {person.name} {person.number}
+      {person.name} {person.number} <button onClick={() => {handleDelete(person)}} key={person.id}>delete</button>
     </p>
   )
 }
@@ -49,6 +52,19 @@ const App = () => {
   const handleNewNameFilter = (event) => {
     setNewNameFilter(event.target.value)
   }
+
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      const changedPersons = [...persons].filter(p => (p.id !== person.id))
+      personService
+        .deletePerson(person.id)
+        .then((_) => {
+          setPersons(changedPersons)
+        })
+    }
+  }
+
+
 
   const addName = (event) => {
     event.preventDefault() // prevent default behaviour as required
@@ -101,7 +117,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      {persons.filter(person => person.name.toLowerCase().includes(newNameFilter.toLowerCase())).map((person) => <PersonNumber person={person} key={person.id}/>)}
+      {persons.filter(person => person.name.toLowerCase().includes(newNameFilter.toLowerCase())).map((person) => <PersonNumber person={person} handleDelete={handleDelete} key={person.id}/>)}
       
     </div>
     
