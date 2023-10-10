@@ -54,14 +54,21 @@ const App = () => {
     let nameObject = {
       name: newName,
       number: newNumber,
-      id: persons[persons.length-1].id + 1
+      // id: persons[persons.length-1].id + 1
     }
 
     // if none of the names in `persons` matches `newName`
     // (use `newName` instead of `event.target.value`),
     // add the `nameObject` to `persons`
     if (persons.filter(person => person.name === newName).length === 0) {
-      setPersons(persons.concat(nameObject))
+      // send the data to the server
+      axios
+        .post('http://localhost:3001/persons', nameObject)
+        .then(response => {
+          console.log(response)
+          setPersons(persons.concat(response.data))
+        })
+      // setPersons(persons.concat(nameObject))
     } else {
       let alertMessege = `${newName} is already added to phonebook`
       alert(alertMessege)
@@ -92,7 +99,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      {persons.filter(person => person.name.toLowerCase().includes(newNameFilter.toLowerCase())).map((person) => <PersonNumber person={person}/>)}
+      {persons.filter(person => person.name.toLowerCase().includes(newNameFilter.toLowerCase())).map((person) => <PersonNumber person={person} key={person.id}/>)}
       
     </div>
     
