@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-
-
-
 const PersonNumber = ({person, handleDelete}) => {
   return (
     <p key={person.id}>
@@ -33,12 +30,24 @@ const PersonForm = ({addName, newName, handleNameChange, newNumber, handleNumber
 </form>
 )
 
+const Notification = ({ messege, level }) => {
+  if (messege === null) {
+    return null
+  }
+
+  return (
+    <div className={level}>{messege}</div>
+  )
+}
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newNameFilter, setNewNameFilter] = useState('')
+  const [notificationMessege, setNotificationMessege] = useState(null)
+  const [notificationLevel, setNotificationLevel] = useState('info')
 
   const handleNameChange = (event) => {
       setNewName(event.target.value) 
@@ -59,6 +68,11 @@ const App = () => {
         .deletePerson(person.id)
         .then((_) => {
           setPersons(changedPersons)
+          setNotificationLevel("info")
+          setNotificationMessege(
+            `Delete ${person.name}`
+          )
+          setTimeout(() => {setNotificationMessege(null)}, 5000)
         })
     }
   }
@@ -84,6 +98,11 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName("")
           setNewNumber("")
+          setNotificationLevel("info")
+          setNotificationMessege(
+            `Add ${returnedPerson.name}`
+          )
+          setTimeout(() => {setNotificationMessege(null)}, 5000)
         })
     } else {
       let alertMessege = `${newName} is already added to phonebook, replace the old number with new one?`
@@ -97,6 +116,12 @@ const App = () => {
             setPersons(persons.map(person => person.id===id ? returnedPerson : person))
             setNewName("")
             setNewNumber("")
+            setNotificationLevel("info")
+            setNotificationMessege(
+              `Change number of ${returnedPerson.name} to ${returnedPerson.number}`
+            )
+            setTimeout(() => {setNotificationMessege(null)}, 5000)
+
           })
       }
     }
@@ -117,6 +142,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification messege={notificationMessege} level={notificationLevel} />
       <Filter newNameFilter={newNameFilter} handleNewNameFilter={handleNewNameFilter}/>
       <PersonForm
         addName={addName}
