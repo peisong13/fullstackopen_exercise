@@ -74,6 +74,13 @@ const App = () => {
           )
           setTimeout(() => {setNotificationMessege(null)}, 5000)
         })
+        .catch(error => {
+          setNotificationLevel('error')
+          setNotificationMessege(
+            `Failed to delete of ${person.name}`
+          )
+          setTimeout(() => {setNotificationMessege(null)}, 5000)
+        })
     }
   }
 
@@ -104,6 +111,15 @@ const App = () => {
           )
           setTimeout(() => {setNotificationMessege(null)}, 5000)
         })
+        .catch(error => {
+          setNotificationLevel('error')
+          setNotificationMessege(
+            `Failed to add ${nameObject.name}` 
+            // I thint the server should do something to prevent adding same person by different users simultaneously add throw error to user
+            // only local `person` is checked when adding person
+          )
+          setTimeout(() => {setNotificationMessege(null)}, 5000)
+        })
     } else {
       let alertMessege = `${newName} is already added to phonebook, replace the old number with new one?`
       // alert(alertMessege)
@@ -122,6 +138,13 @@ const App = () => {
             )
             setTimeout(() => {setNotificationMessege(null)}, 5000)
 
+          })
+          .catch(error => {
+            setNotificationLevel('error')
+            setNotificationMessege(
+              `Failed to change number of ${nameObject.name}`
+            )
+            setTimeout(() => {setNotificationMessege(null)}, 5000)
           })
       }
     }
