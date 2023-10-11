@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
 
 
@@ -87,8 +86,19 @@ const App = () => {
           setNewNumber("")
         })
     } else {
-      let alertMessege = `${newName} is already added to phonebook`
-      alert(alertMessege)
+      let alertMessege = `${newName} is already added to phonebook, replace the old number with new one?`
+      // alert(alertMessege)
+      if (window.confirm(alertMessege)) {
+        // replace the old number
+        let id = persons.find(person => person.name === newName).id
+        personService
+          .update(id, nameObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id===id ? returnedPerson : person))
+            setNewName("")
+            setNewNumber("")
+          })
+      }
     }
     console.log('button clicked', nameObject)
     // console.log(nameObject)
