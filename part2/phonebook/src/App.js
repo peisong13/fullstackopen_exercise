@@ -113,9 +113,10 @@ const App = () => {
           setTimeout(() => {setNotificationMessege(null)}, 5000)
         })
         .catch(error => {
+          console.log(error.response.data)
           setNotificationLevel('error')
           setNotificationMessege(
-            `Failed to add ${nameObject.name}` 
+            `${error.response.data.error}` 
             // I thint the server should do something to prevent adding same person by different users simultaneously add throw error to user
             // only local `person` is checked when adding person
           )
@@ -143,7 +144,7 @@ const App = () => {
           .catch(error => {
             setNotificationLevel('error')
             setNotificationMessege(
-              `Failed to change number of ${nameObject.name}`
+              `${error.response.data.error}`
             )
             setTimeout(() => {setNotificationMessege(null)}, 5000)
           })
