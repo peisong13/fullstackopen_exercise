@@ -6,8 +6,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Hello blog",
+    "title": "Hello blog again again",
     "author": "psyang",
     "url": "https://www.google.com",
-    "likes": 2048
+    "likes": 4096
 }
+
