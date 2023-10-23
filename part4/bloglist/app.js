@@ -12,7 +12,7 @@ mongoose.connect(mongoUrl)
     .then(() => {
         logger.info('MongoDB connected.')
     })
-    .catch(error => {
+    .catch(() => {
         logger.error('MongoDB connection failed.')
     })
 
