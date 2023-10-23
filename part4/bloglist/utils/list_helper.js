@@ -9,7 +9,20 @@ const totalLikes = (blogs) => {
     }
     return likes
 }
+
+const favaoriteBlog = (blogs) => {
+    var favBlog = {}
+    if (blogs.length > 0) {
+        favBlog = blogs.reduce((prev, cur) => {
+            return cur.likes > prev.likes ? cur : prev
+        }, blogs[0])
+    }
+    // console.log('my favBlog variable is:', favBlog)
+    return favBlog
+}
+
 module.exports = {
     dummy,
-    totalLikes
+    totalLikes,
+    favaoriteBlog
 }
