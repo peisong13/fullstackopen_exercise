@@ -31,7 +31,7 @@ const mostBlogs = (blogs) => {
 
     if (blogs.length > 0) {
         const blogCount = _.countBy(blogs, 'author')
-        console.log(blogCount)
+        // console.log(blogCount)
         _.forEach(blogCount, (num, name) => {
             if (num > authorObject.blogs) {
                 authorObject.author = name

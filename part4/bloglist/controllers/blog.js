@@ -12,6 +12,11 @@ blogRouter.get('/', (request, response) => {
 blogRouter.post('/', (request, response) => {
     const blog = new Blog(request.body)
 
+    if (!blog['title'] || !blog['url']) {
+        response.status(400).json({ error: 'content missing' })
+        return
+    }
+
     blog
         .save()
         .then(result => {

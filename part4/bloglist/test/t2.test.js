@@ -4,6 +4,7 @@ const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const _ = require('lodash')
 
 const initialBlogs = [
     {
@@ -44,6 +45,31 @@ const initialBlogs = [
     }  
 ]
 
+const oneBlog = {
+    title: 'My lovely blog',
+    author: 'psyang',
+    url: 'http://www.google.com',
+    likes: 1
+}
+
+const oneBlogWithoutLike = {
+    title: 'My poor blog, nobody likes it. Even the POST request',
+    author: 'psyang',
+    url: 'http://www.google.com'
+}
+
+const oneBlogWithoutTitle = {
+    author: 'psyang',
+    url: 'http://www.google.com',
+    likes: 1
+}
+
+const oneBlogWithoutUrl = {
+    title: 'My lovely blog. Well...Not lovely anymore.',
+    author: 'psyang',
+    likes: 1
+}
+
 beforeEach(async () => {
     await Blog.deleteMany({}) // clear the test database
     const blogObjects = initialBlogs.map((blog) => new Blog(blog))
@@ -51,20 +77,47 @@ beforeEach(async () => {
     await Promise.all(promiseArray)
 }, 100000)
 
-test('blogs are returned as json and the number is correct', async () => {
-    const response = await api.get('/api/blogs')
-    expect(response.status).toEqual(200)
-    expect(response.headers['content-type']).toMatch(/application\/json/)
-    expect(response.body).toHaveLength(initialBlogs.length)
-}, 100000)
-
-test('the unique identifier is named id', async () => {
-    const response = await api.get('/api/blogs')
-    // console.log(response.body)
-    response.body.forEach((blog) => {
-        expect(blog['id']).toBeDefined()
+describe('On the server', () => {
+    test('blogs are returned as json and the number is correct', async () => {
+        const response = await api.get('/api/blogs')
+        expect(response.status).toEqual(200)
+        expect(response.headers['content-type']).toMatch(/application\/json/)
+        expect(response.body).toHaveLength(initialBlogs.length)
+    }, 100000)
+    
+    test('the unique identifier is named id', async () => {
+        const response = await api.get('/api/blogs')
+        // console.log(response.body)
+        response.body.forEach((blog) => {
+            expect(blog['id']).toBeDefined()
+        })
     })
+    
+    test('POST method is handled right', async () => {
+        const response = await api.post('/api/blogs').set('content-type', 'application/json').send(oneBlog)
+        expect(response.status).toEqual(201)
+        _.forEach(oneBlog, (v, k) => {
+            expect(response.body[k]).toEqual(v)
+        })
+    
+        const getResponse = await api.get('/api/blogs')
+        expect(getResponse.body).toHaveLength(initialBlogs.length + 1)
+    })
+    
+    test('if there is no likes property in POST request, set it to zero', async () => {
+        const response = await api.post('/api/blogs').set('content-type', 'application/json').send(oneBlogWithoutLike)
+        expect(response.body['likes']).toEqual(0)
+    })
+    
+    test('if there is no title or url in POST request, return 400 Bad Request', async () => {
+        var response = await api.post('/api/blogs').set('content-type', 'application/json').send(oneBlogWithoutTitle)
+        expect(response.status).toEqual(400)
+        
+        response = await api.post('/api/blogs').set('content-type', 'application/json').send(oneBlogWithoutUrl)
+        expect(response.status).toEqual(400)
+    }, 10000)
 })
+
 
 afterAll(() => {
     mongoose.connection.close()
