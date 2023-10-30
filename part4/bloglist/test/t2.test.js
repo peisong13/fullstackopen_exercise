@@ -119,7 +119,7 @@ describe('On the server', () => {
     }, 10000)
 })
 
-describe('Regarding Deletion of a note', () => {
+describe('deletion of a note', () => {
     test('succeeds with status code 204 if id is valid', async () => {
         const blogAtStart = await helper.blogsInDb()
 
@@ -135,6 +135,23 @@ describe('Regarding Deletion of a note', () => {
         expect(ids).not.toContain(blogToDelete.id)
 
     })
+})
+
+test('updating a node', async () => {
+    const blogAtStart = await helper.blogsInDb()
+    // console.log(blogAtStart)
+    const blogToUpdate = _.cloneDeep(blogAtStart[0])
+    blogToUpdate.likes += 1
+    const returnedBlog = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+
+    expect(returnedBlog.body.likes).toEqual(blogAtStart[0].likes + 1)
+    const blogAtEnd = await helper.blogsInDb()
+    // console.log(blogAtEnd)
+    const updatedBlog = _.find(blogAtEnd, {'id': blogToUpdate.id}) 
+    expect(updatedBlog.likes).toEqual(blogAtStart[0].likes + 1)
 })
 
 
