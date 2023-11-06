@@ -17,3 +17,13 @@ PUT http://localhost:3003/api/blogs/65323919c7caaa153df0bcf8
 Content-Type: application/json
 
 {"likes":20000}
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "arssot",
+    "name": "sssuperuser",
+    "password": "salainen"
+}
