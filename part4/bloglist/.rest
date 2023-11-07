@@ -29,11 +29,8 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3003/api/users
+POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
-{
-    "username": "arsss",
-    "name": "sssuperuser",
-    "password": "sa"
-}
+{"title":"Hello blog 5","author":"psyang","url":"https://www.google.com","likes":20}
+
