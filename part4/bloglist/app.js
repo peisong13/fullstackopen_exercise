@@ -7,6 +7,8 @@ const mongoose = require('mongoose')
 const blogRouter = require('./controllers/blog')
 const { unknowEndpoint, errorHandler, requestLogger } = require('./utils/middleware')
 const userRouter = require('./controllers/user')
+const loginRouter = require('./controllers/login')
+
 
 const mongoUrl = config.DB_url
 mongoose.connect(mongoUrl)
@@ -23,6 +25,7 @@ app.use(requestLogger)
 
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', userRouter)
+app.use('/api/login', loginRouter)
 app.use(unknowEndpoint)
 app.use(errorHandler)
 

@@ -1,15 +1,42 @@
+require('express-async-errors')
 const blogRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-blogRouter.get('/', async (request, response) => {
+const getTokenFrom = (request) => {
+    const auth = request.get('authorization')
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+        return auth.substring(7)
+    }
+    return null
+}
+
+// eslint-disable-next-line no-unused-vars
+blogRouter.get('/', async (request, response, next) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
     response.json(blogs)
 })
   
-blogRouter.post('/', async (request, response) => {
+// eslint-disable-next-line no-unused-vars
+blogRouter.post('/', async (request, response, next) => {
     const body = request.body
-    const user = await User.findOne()
+
+    const token = getTokenFrom(request)
+    if (!token) {
+        return response.status(401).json({
+            error: 'token missing'
+        })
+    }
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    
+    if (!decodedToken.id) {
+        return response.status(401).json({
+            error: 'token missing or invalid'
+        })
+    }
+
+    const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({
         title: body.title,
@@ -30,16 +57,19 @@ blogRouter.post('/', async (request, response) => {
     await user.save()
 
     response.status(201).json(savedBlog)
+
 })
 
-blogRouter.delete('/:id', (request, response) => {
+// eslint-disable-next-line no-unused-vars
+blogRouter.delete('/:id', (request, response, next) => {
     Blog.findByIdAndRemove(request.params.id)
         .then(() => {
             response.status(204).end()
         })
 })
 
-blogRouter.put('/:id', (request, response) => {
+// eslint-disable-next-line no-unused-vars
+blogRouter.put('/:id', (request, response, next) => {
     const body = request.body
     
     const blog = {
