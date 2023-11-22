@@ -4,14 +4,6 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const getTokenFrom = (request) => {
-    const auth = request.get('authorization')
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-        return auth.substring(7)
-    }
-    return null
-}
-
 // eslint-disable-next-line no-unused-vars
 blogRouter.get('/', async (request, response, next) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
@@ -22,7 +14,7 @@ blogRouter.get('/', async (request, response, next) => {
 blogRouter.post('/', async (request, response, next) => {
     const body = request.body
 
-    const token = getTokenFrom(request)
+    const token = request.token // with is set by middleware tokenExtractor
     if (!token) {
         return response.status(401).json({
             error: 'token missing'
