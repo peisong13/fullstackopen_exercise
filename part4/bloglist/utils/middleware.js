@@ -21,6 +21,24 @@ const tokenExtrator = (request, response, next) => {
     next()
 }
 
+const userExtractor = (request, response, next) => {
+    // user id is extracted in request.decodedToken.id
+    // use after tokenExtractor
+    // should not return error
+    const token = request.token
+    if (token) {
+        const decodedToken = jwt.verify(token, process.env.SECRET)
+        if (decodedToken.id) {
+            request.decodedToken = decodedToken
+        } else {
+            request.decodedToken = null
+        }
+    } else {
+        request.decodedToken = null
+    }
+    next()
+}
+
 const tokenValidator = (request, response, next) => {
     const token = request.token // with is set by middleware tokenExtractor
     if (!token) {
@@ -29,13 +47,15 @@ const tokenValidator = (request, response, next) => {
         })
     }
 
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({
-            error: 'token missing or invalid'
-        })
-    } else {
-        request.decodedToken = decodedToken
+    if (!request.decodedToken.id) { // if the request.decodedToken is not extracted by userExtractor, try it
+        const decodedToken = jwt.verify(token, process.env.SECRET)
+        if (decodedToken.id) {
+            request.decodedToken = decodedToken
+        } else {
+            return response.status(401).json({
+                error: 'token missing or invalid'
+            })
+        }
     }
     next()
 }
@@ -73,6 +93,7 @@ const errorHandler = (error, request, response, next) => {
 module.exports = {
     requestLogger,
     tokenExtrator,
+    userExtractor,
     tokenValidator,
     unknowEndpoint,
     errorHandler
