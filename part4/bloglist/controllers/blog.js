@@ -1,8 +1,9 @@
 require('express-async-errors')
 const blogRouter = require('express').Router()
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const { tokenValidator } = require('../utils/middleware')
 
 // eslint-disable-next-line no-unused-vars
 blogRouter.get('/', async (request, response, next) => {
@@ -11,24 +12,10 @@ blogRouter.get('/', async (request, response, next) => {
 })
   
 // eslint-disable-next-line no-unused-vars
-blogRouter.post('/', async (request, response, next) => {
+blogRouter.post('/', tokenValidator, async (request, response, next) => { // middleware substack, see https://expressjs.com/en/guide/using-middleware.html
     const body = request.body
 
-    const token = request.token // with is set by middleware tokenExtractor
-    if (!token) {
-        return response.status(401).json({
-            error: 'token missing'
-        })
-    }
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    
-    if (!decodedToken.id) {
-        return response.status(401).json({
-            error: 'token missing or invalid'
-        })
-    }
-
-    const user = await User.findById(decodedToken.id)
+    const user = await User.findById(request.decodedToken.id) // find the logged in user name based on decodedToken id
 
     const blog = new Blog({
         title: body.title,
@@ -53,11 +40,19 @@ blogRouter.post('/', async (request, response, next) => {
 })
 
 // eslint-disable-next-line no-unused-vars
-blogRouter.delete('/:id', (request, response, next) => {
-    Blog.findByIdAndRemove(request.params.id)
-        .then(() => {
-            response.status(204).end()
+blogRouter.delete('/:id', tokenValidator, async (request, response, next) => {
+
+    // compare user with user info in blog
+    const blog = await Blog.findById(request.params.id)
+
+    if (blog.user.toString() === request.decodedToken.id) {
+        await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+    } else {
+        response.status(403).json({
+            error: 'cannot delete blogs that belong to others'
         })
+    }
 })
 
 // eslint-disable-next-line no-unused-vars
