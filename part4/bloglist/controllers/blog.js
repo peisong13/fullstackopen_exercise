@@ -16,10 +16,7 @@ blogRouter.get('/self', async (request, response, next) => {
     const user = await User.findById(request.decodedToken.id)
     // const blogs = await Blog.find({$where: () => {this.user.uername === user.username}}) // MongoServerError: $where not allowed in this atlas tier
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
-    const blogsOfSelf = blogs.filter((blog) => {blog.user._id.toString() === user.id})
-    console.log(blogs[0].user.id.toString())
-    console.log(user.id.toString())
-    console.log(blogs[5].user.id.toString() === user.id.toString())
+    const blogsOfSelf = blogs.filter((blog) => blog.user._id.toString() === user.id.toString())
     response.json(blogsOfSelf)
 }) 
   
