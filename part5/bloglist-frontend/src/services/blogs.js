@@ -12,7 +12,7 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const findSelf = async (user) => {
+const findSelf = async () => {
   const response = await axios.get(baseUrl + '/self', {headers: {
     'Authorization': token
   }})
