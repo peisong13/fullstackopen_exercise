@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
@@ -12,11 +12,11 @@ const App = () => {
   const [errorMessege, setErrorMessege] = useState(null)
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
+  const updateBlogs = (user) => {
+    blogService.findSelf(user).then(blogs =>
       setBlogs( blogs )
-    )  
-  }, [])
+  )}
+  
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -24,6 +24,7 @@ const App = () => {
       const user = await loginService.login({ username, password })
       blogService.setToken(user.token)
       setUser(user)
+      updateBlogs(user)
       setUsername('')
       setPassword('')
       console.log('login sucessful')
@@ -58,16 +59,19 @@ const App = () => {
     </form>
   )
 
+  const userBlogs = () => (
+    <div>
+        <p className='loggedInfo'>user {user.name} logged in</p>
+        {blogs.map(blog => (<Blog blog={blog} key={blog.id}/>))}
+    </div>
+  )
+
   return (
     <div>
       <h2>blogs</h2>
-      <h2>{username}</h2>
       <Notification messege={errorMessege}/>
       {!user && loginForm()}
-      {user && <div>
-        <p className='loggedInfo'>user {user.name} logged in</p>
-        <Blogs user={user} />
-        </div>}
+      {user && userBlogs()}
     </div>
   )
 }
