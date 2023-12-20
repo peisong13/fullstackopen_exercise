@@ -10,6 +10,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessege, setErrorMessege] = useState(null)
+  const [infoMessege, setInfoMessege] = useState(null)
   const [user, setUser] = useState(null)
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
@@ -57,6 +58,10 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      setInfoMessege('You added a post.')
+      setTimeout(() => {
+        setInfoMessege(null)
+      }, 5000)
     } catch (exception) {
       setErrorMessege('Something went wrong.')
       setTimeout(() => {
@@ -106,7 +111,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification messege={errorMessege}/>
+      <Notification messege={errorMessege} level='error'/>
+      <Notification messege={infoMessege} level='info'/>
       {!user && loginForm()}
       {user && userBlogs()}
     </div>
