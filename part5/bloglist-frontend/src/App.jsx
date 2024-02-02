@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import NewNoteForm from './components/NewNoteForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,6 +17,8 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedBlogUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -58,6 +62,7 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      blogFormRef.current.toggleVisibility()
       setInfoMessege('You added a post.')
       setTimeout(() => {
         setInfoMessege(null)
@@ -99,11 +104,9 @@ const App = () => {
   const userBlogs = () => (
     <div>
         <p className='loggedInfo'>user {user.name} logged in. <button onClick={logOut}>log out</button></p>
-        <h3>create new</h3>
-        <p>title: <input type='text' value={newTitle} name='newTitle' onChange={({ target }) => setNewTitle(target.value)}/></p>
-        <p>author: <input type='text' value={newAuthor} name='newAuthor' onChange={({ target }) => setNewAuthor(target.value)}/></p>
-        <p>url: <input type='text' value={newUrl} name='newUrl' onChange={({ target }) => setNewUrl(target.value)}/></p>
-        <button type='submit' onClick={handleCreate}>create</button>
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+          <NewNoteForm newTitle={newTitle} setNewTitle={setNewTitle} newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} handleCreate={handleCreate} />
+        </Togglable>
         {blogs.map(blog => (<Blog blog={blog} key={blog.id}/>))}
     </div>
   )
