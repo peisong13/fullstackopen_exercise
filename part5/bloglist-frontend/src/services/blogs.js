@@ -30,4 +30,9 @@ const findSelf = async () => {
   return response.data
 }
 
-export default { getAll, setToken, findSelf, create }
+const like = async ({ id, data }) => {
+  const response = await axios.put(baseUrl + '/' + id, data)
+  return response.data
+}
+
+export default { getAll, setToken, findSelf, create, like }
