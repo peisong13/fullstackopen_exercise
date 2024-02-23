@@ -31,7 +31,7 @@ const App = () => {
   }, [])
 
   const updateBlogs = () => {
-    blogService.findSelf().then(blogs =>
+    blogService.getAll().then(blogs =>
       setBlogs( blogs )
   )}
   

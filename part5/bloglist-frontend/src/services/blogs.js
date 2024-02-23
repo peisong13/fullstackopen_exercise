@@ -35,4 +35,10 @@ const like = async ({ id, data }) => {
   return response.data
 }
 
-export default { getAll, setToken, findSelf, create, like }
+const remove = async ({ id }) => {
+  const response = await axios.delete(baseUrl + '/' + id, {headers: {
+    'Authorization': token
+  }})
+}
+
+export default { getAll, setToken, findSelf, create, like, remove }

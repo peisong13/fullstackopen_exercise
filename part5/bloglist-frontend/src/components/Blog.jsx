@@ -6,7 +6,7 @@ const Blog = ({ blog }) => {
   
   const toggleVisibility = () => {
     setDetailVisibility(!detailVisibility)
-    // console.log(blog)
+    console.log(blog)
   }
 
   const showWhenVisible = { display: detailVisibility? '' : 'none' }
@@ -20,6 +20,16 @@ const Blog = ({ blog }) => {
     }
   }
 
+  const handleRemove = async () => {
+    try {
+      if (window.confirm('Do you really want to delete this blog?')) {
+        const response = await blogService.remove({id: blog.id})
+      }
+    } catch (exception) {
+      console.log(exception)
+    }
+  }
+
   return (
     <div className='singleBlog'>
       {blog.title} 
@@ -28,6 +38,8 @@ const Blog = ({ blog }) => {
         <div>{blog.url}</div>
         <div>likes {blog.likes} <button onClick={handleLike}>like</button></div>
         <div>{blog.author}</div>
+        {JSON.parse(window.localStorage.loggedBlogUser).username === blog.user.username && <div><button onClick={handleRemove}>remove</button></div>}
+        
       </div>
     </div>  
   )
