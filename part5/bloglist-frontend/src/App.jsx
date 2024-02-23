@@ -33,8 +33,8 @@ const App = () => {
   const updateBlogs = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-  )}
-  
+    )}
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -78,19 +78,19 @@ const App = () => {
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
-        username 
+        username
         <input type='text'
-        value={username}
-        name='username'
-        onChange={({ target }) => setUsername(target.value)}
+          value={username}
+          name='username'
+          onChange={({ target }) => setUsername(target.value)}
         />
       </div>
       <div>
         password
         <input type='password'
-        value={password}
-        name='password'
-        onChange={({ target }) => setPassword(target.value)}
+          value={password}
+          name='password'
+          onChange={({ target }) => setPassword(target.value)}
         />
       </div>
       <button type='submit'>Login</button>
@@ -103,14 +103,14 @@ const App = () => {
 
   const userBlogs = () => (
     <div>
-        <p className='loggedInfo'>user {user.name} logged in. <button onClick={logOut}>log out</button></p>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <NewNoteForm newTitle={newTitle} setNewTitle={setNewTitle} newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} handleCreate={handleCreate} />
-        </Togglable>
-        {blogs.sort((a, b) => (b.likes - a.likes)).map(blog => (
-          <Blog blog={blog} key={blog.id}/>
-          )
-        )}
+      <p className='loggedInfo'>user {user.name} logged in. <button onClick={logOut}>log out</button></p>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <NewNoteForm newTitle={newTitle} setNewTitle={setNewTitle} newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} handleCreate={handleCreate} />
+      </Togglable>
+      {blogs.sort((a, b) => (b.likes - a.likes)).map(blog => (
+        <Blog blog={blog} key={blog.id}/>
+      )
+      )}
     </div>
   )
 

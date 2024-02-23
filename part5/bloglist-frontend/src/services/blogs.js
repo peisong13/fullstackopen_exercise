@@ -17,16 +17,16 @@ const create = async ({ newTitle, newAuthor, newUrl }) => {
     'title': newTitle,
     'author': newAuthor,
     'url': newUrl
-  }, {headers: {
+  }, { headers: {
     'Authorization': token
-  }})
+  } })
   return response.data
 }
 
 const findSelf = async () => {
-  const response = await axios.get(baseUrl + '/self', {headers: {
+  const response = await axios.get(baseUrl + '/self', { headers: {
     'Authorization': token
-  }})
+  } })
   return response.data
 }
 
@@ -36,9 +36,9 @@ const like = async ({ id, data }) => {
 }
 
 const remove = async ({ id }) => {
-  const response = await axios.delete(baseUrl + '/' + id, {headers: {
+  const response = await axios.delete(baseUrl + '/' + id, { headers: {
     'Authorization': token
-  }})
+  } })
 }
 
 export default { getAll, setToken, findSelf, create, like, remove }
